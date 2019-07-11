@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>地球大数据挖掘分析系统EarthDataMiner</title>
+    <meta name="description" content="Big Data Analytics" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico"  />
+
+    <script type="text/javascript" src="lib/vue.js"></script>
+    <script type="text/javascript" src="lib/vue-router.js"></script>
+    <script type="text/javascript" src="lib/iview/iview.js"></script>
+    <script type="text/javascript" src="lib/qs.js"></script>
+    <script type="text/javascript" src="lib/axios.js"></script>
+    <script type="text/javascript" src="lib/ajax.js"></script>
+    <script type="text/javascript" src="lib/date-util.js"></script>
+    <script type="text/javascript" src="lib/eChart/echarts-all.js"></script>
+    <script type="text/javascript" src="lib/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="lib/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="lib/uuid.min.js"></script>
+    <script type="text/javascript" src="lib/bootstrap-select.min.js"></script>
+    <script type="text/javascript" src="lib/jquery.jsPlumb.min.js"></script>
+    <!-- import formCreate -->
+    <!--<script type="text/javascript" src="lib/form-create.min.js"></script>-->
+
+    <script type="text/javascript" src="lib/openlayers/ol.js"></script>
+    <link rel="stylesheet" href="lib/openlayers/ol.css" type="text/css">
+
+    <script type="text/javascript" src="lib/codemirror-5.35.0/lib/codemirror.js"></script>
+    <script type="text/javascript" src="lib/codemirror-5.35.0/mode/python/python.js"></script>
+    <!--<script type="text/javascript" src="lib/jsplumb.min.js"></script>-->
+    <link rel="stylesheet" href="lib/codemirror-5.35.0/lib/codemirror.css"/>
+    <link rel="stylesheet" href="lib/codemirror-5.35.0/theme/dracula.css"/>
+
+    <script type="text/javascript" src="app/base.js"></script>
+    <script type="text/javascript" src="app/config.js"></script>
+    <script type="text/javascript" src="app/bdp-dataUtil.js"></script>
+
+    <script type="text/javascript" src="app/login.js"></script>
+    <script type="text/javascript" src="app/dispatch.js"></script>
+    <script type="text/javascript" src="app/bdp-icon.js"></script>
+    <script type="text/javascript" src="app/bdp-codeEditor.js"></script>
+    <script type="text/javascript" src="app/bdp-codeViewer.js"></script>
+    <script type="text/javascript" src="app/bdp-landsatEditor.js"></script>
+    <script type="text/javascript" src="app/bdp-datafileEditor.js"></script>
+    <script type="text/javascript" src="app/bdp-algorithmEditor.js"></script>
+
+    <script type="text/javascript" src="app/bdp-hdfsfileEditor.js"></script>
+    <script type="text/javascript" src="app/bdp-hiveDatabaseEditor.js"></script>
+    <script type="text/javascript" src="app/bdp-hiveDatabaseDetailEditor.js"></script>
+    <script type="text/javascript" src="app/bdp-hiveTableEditor.js"></script>
+
+    <script type="text/javascript" src="app/bdp-empty.js"></script>
+    <script type="text/javascript" src="app/bdp-tree.js"></script>
+    <script type="text/javascript" src="app/bdp-file.js"></script>
+    <script type="text/javascript" src="app/bdp-algorithm.js"></script>
+    <script type="text/javascript" src="app/bdp-data.js"></script>
+    <script type="text/javascript" src="app/bdp-head.js"></script>
+    <script type="text/javascript" src="app/bdp-left.js"></script>
+    <script type="text/javascript" src="app/bdp-right.js"></script>
+    <script type="text/javascript" src="app/bdp-task.js"></script>
+    <script type="text/javascript" src="app/bdp-model.js"></script>
+    <script type="text/javascript" src="app/bdp-center.js"></script>
+    <script type="text/javascript" src="app/bdp-terminal.js"></script>
+    <script type="text/javascript" src="app/bdp-image.js"></script>
+    <script type="text/javascript" src="app/bdp-map.js"></script>
+    <script type="text/javascript" src="app/bdp-bottom.js"></script>
+    <script type="text/javascript" src="app/bdp-notebook.js"></script>
+
+    <script type="text/javascript" src="app/bdp-forestEditor.js"></script>
+    <script type="text/javascript" src="app/bdp-decloudEditor.js"></script>
+    <script type="text/javascript" src="app/bdp-areaEditor.js"></script>
+    <script type="text/javascript" src="app/bdp-golfSegmentationEditor.js"></script>
+    <script type="text/javascript" src="app/bdp-associationEditor.js"></script>
+    <script type="text/javascript" src="app/bdp-notebookEditor.js"></script>
+    <script type="text/javascript" src="app/bdp-app.js"></script>
+
+    <script type="text/javascript" src="app/main.js"></script>
+    <script type="text/javascript" src="app/router.js"></script>
+    <script type="text/javascript" src="app/bdp-workflow.js"></script>
+    <script type="text/javascript" src="app/bdp-workflow-home.js"></script>
+    <script type="text/javascript" src="app/bdp-property.js"></script>
+    <script type="text/javascript" src="app/bdp-moduleList.js"></script>
+    <script type="text/javascript" src="app/bdp-module-com.js"></script>
+    <script type="text/javascript" src="app/bdp-painter.js"></script>
+    <script type="text/javascript" src="app/worflow-modules-all.js"></script>
+    <script type="text/javascript" src="app/workflow-config.js"></script>
+
+
+    <link rel="stylesheet" href="style/awesome/css/font-awesome.css" type="text/css" />
+    <link rel="stylesheet" href="lib/iview/styles/iview.css" type="text/css" />
+    <link rel="stylesheet" href="style/app.css" type="text/css" />
+    <link rel="stylesheet" href="lib/bootstrap-select.min.css">
+
+</head>
+<body>
+<div id="app">
+    <router-view></router-view>
+</div>
+<script type="text/javascript" src="app/app.js"></script>
+</body>
+</html>

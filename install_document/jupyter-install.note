@@ -1,0 +1,19 @@
+#安装helm
+
+参考：https://github.com/codlife/earth_config/tree/master/kubeapp-ide/jupyter
+
+关键问题1：
+其中：helm init --service-account tiller --wait 默认需要翻墙
+制定一个国内的源即可，比如：
+helm init --upgrade -i registry.cn-hangzhou.aliyuncs.com/google_containers/tiller:v2.9.0 --stable-repo-url https://kubernetes.oss-cn-hangzhou.aliyuncs.com/charts
+其中v2.9.0是版本号，可以修改为更新的，使用helm version 查看
+
+关键问题2：
+下载镜像问题；
+可以从阿里云node1节点上进行拷贝，或者docker pull，只要保证有镜像即可，脚本可以参考prepare_images.sh
+
+关键问题3：
+每次重装jhub，都要删除namespace，
+kubectl delete namespace jhub
+删除helm 残留
+helm delete jhub --purge

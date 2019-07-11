@@ -1,0 +1,44 @@
+kind: ReplicationController
+apiVersion: v1
+metadata:
+  name: hadoop-master
+  namespace: hadoop
+spec:
+  replicas: 1
+  selector:
+    component: hadoop-master
+  template:
+    metadata:
+      labels:
+        component: hadoop-master
+    spec:
+#      nodeSelector:
+#          role: "master"
+      containers:
+        - name: hadoop-master
+          image: registry.cn-hangzhou.aliyuncs.com/hadoop_iscas/hadoop_cluster:2.7.6
+          command: ["/root/scripts/start-master-hadoop.sh"]
+          ports:
+            - containerPort: 3333
+            - containerPort: 8000
+            - containerPort: 8088
+            - containerPort: 50070
+            - containerPort: 8080
+            - containerPort: 7077
+            - containerPort: 8081
+          resources:
+            limits:
+              cpu: "1"
+              memory: 512Mi
+            requests:
+              cpu: 1000m
+              memory: 512Mi
+          securityContext:
+            privileged: true
+#          volumeMounts:
+#          - mountPath: /root/app
+#            name: SparkApp
+#      volumes:
+#      - name: SparkApp
+#        hostPath:
+#          path: /root/app

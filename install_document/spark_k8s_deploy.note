@@ -1,0 +1,2 @@
+进入hadoop-cluster目录
+执行sh deploy.sh 即可
