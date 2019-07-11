@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: algo-segment-svc
+  namespace: ingress-nginx
+  labels:
+    app: algo-segment-svc
+spec:
+  selector: 
+    app: algo-segment
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+    protocol: TCP

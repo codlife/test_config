@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: algo-sentiment
+  namespace: algorithm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: algo-sentiment
+  template:
+    metadata:
+      labels:
+        app: algo-sentiment
+    spec:
+      containers:
+      - name: algo-sentiment
+        image: algo-sentiment:0.1
+        ports:
+        - containerPort: 8080
+          name: httpport
+

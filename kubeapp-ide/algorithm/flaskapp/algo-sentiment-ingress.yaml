@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: algo-sentiment
+  namespace: algorithm
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+  - host: www.bdp.algorithm
+    http:
+      paths:
+      - path: /sentiment
+        backend: 
+          serviceName: algo-sentiment-svc
+          servicePort: 80

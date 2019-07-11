@@ -1,0 +1,164 @@
+###################################################
+##
+## Copyright (2018, ) Institute of Software, CAS
+##
+## Author: wuheng@{iscas.ac.cn}
+## Date  : 2018/11/29
+##
+#####################################################
+
+# if RpmFile dose not has either Name or Version, the script exits
+# if no file exits to package, the script exits
+function preParse()
+{
+  checkConfig $1 $2
+  checkFile $1 $2
+}
+
+# if RpmFile has either Name or Version, the script exits
+function checkConfig()
+{
+  name=$1
+  version=$2
+  if [[ -z $name || -z $version ]]
+  then
+    echo "Missing Name or Version"
+    exit
+  fi
+}
+
+# if no file exits to package, the script exits
+function checkFile()
+{
+  name=$1
+  version=$2
+  if [[ ! -d $name-$version ]]
+  then
+    echo "Missing diectory "$name-$version, "or you have wrong name with version"
+    exit
+  fi
+}
+
+#######################################################
+
+function postParse()
+{
+  name=$1
+  version=$2
+  git=1811
+  mtr=wuheng@iscas.ac.cn
+  dir=\/opt
+  
+  sed -i s/'_NAME_'/$name/g `grep '_NAME_' -rl $name.spec` >/dev/null 2>&1
+  sed -i s/'_VERSION_'/$version/g `grep '_VERSION_' -rl $name.spec` >/dev/null 2>&1 
+  sed -i s/_GIT_/$git/g `grep _GIT_ -rl $name.spec` >/dev/null 2>&1 
+  sed -i s/_MAINTAINER_/$mtr/g `grep _MAINTAINER_ -rl $name.spec` >/dev/null 2>&1
+  sed -i s/_WORKDIR_/$dir/g `grep _WORKDIR_ -rl $name.spec` >/dev/null 2>&1
+
+}
+
+######################################################
+function parse()
+{
+  name=$(cat $1 | grep -w "NAME" | grep -v "#NAME" | awk '{print$2}')
+  version=$(cat $1 | grep -w "VERSION" | grep -v "#VERSION" | awk '{print$2}')
+
+  preParse $name $version
+
+  rm -rf $name.spec
+  cp build.spec $name.spec
+
+  while read line
+  do
+    kind=$(echo $line | awk '{print$1}')
+    if [[ ${line:0:1} == "#" || $kind == "NAME" || $kind == "VERSION" ]]
+    then
+      continue
+    fi
+
+    if [[ $kind == "GIT" || $kind == "MAINTAINER" || $kind == "WORKDIR"  ]]
+    then
+      # just replace the key to the specified value
+      str=$(echo $line | awk -F"$kind " '{print$2}')
+      key="_"$kind"_"
+      value=${str//"/"/\\/}
+      sed -i s/$key/$value/g `grep $key -rl $name.spec`
+    elif [[ $kind == "DEP" ]]
+    then
+      # just generate codes
+      for iname in $(echo $line | awk -F"$kind " '{print$2}')
+      do
+        sed -i "10iRequires: $iname" $name.spec
+      done
+    elif [[ $kind == "CMD" ]]
+    then
+      ## just execute
+      cmd=$(echo $line | awk -F"$kind" '{print$2}')
+      $cmd
+    else
+      echo continue
+  fi
+  done < $1
+
+  postParse $name $version
+}
+
+############################################################
+
+function build()
+{
+  name=$(cat $1 | grep -w "NAME" | grep -v "#NAME" | awk '{print$2}')
+  version=$(cat $1 | grep -w "VERSION" | grep -v "#VERSION" | awk '{print$2}')
+
+  mkdir -p /root/rpmbuild/SOURCES/
+  rm -rf $name-$version.tar.gz
+  \cp $1 $name-$version/
+  tar zcvf $name-$version.tar.gz $name-$version/* >/dev/null 2>&1
+  mv -f $name-$version.tar.gz /root/rpmbuild/SOURCES/$name-$version.tar.gz
+
+
+  mkdir -p /root/rpmbuild/SPECS/
+  mv -f $name.spec /root/rpmbuild/SPECS/$name.spec
+
+  rpmbuild -ba /root/rpmbuild/SPECS/$name.spec
+}
+
+############################################################
+
+function release()
+{
+  target=/root/rpmbuild/RPMS/x86_64/
+  name=$(cat $1 | grep -w "NAME" | grep -v "#NAME" | awk '{print$2}')
+  version=$(cat $1 | grep -w "VERSION" | grep -v "#VERSION" | awk '{print$2}')
+
+  cd $target
+  rpm=$(ls  | grep -w $name | grep -w $version | grep -v grep)
+  \cp $target$rpm $2/$rpm
+  createrepo $2
+}
+
+if [[ $1 == "parse" ]]
+then
+  if [[ -z $2 ]]
+  then
+    parse "RpmFile"
+  else
+    parse $2
+  fi
+elif [[ $1 == "build" ]]
+then
+  if [[ -z $2 ]]
+  then
+    build "RpmFile"
+  else
+    build $2
+  fi
+elif [[ $1 == "release" ]]
+then
+  if [[ -z $2 ]]
+  then
+    release "RpmFile" $3
+  else
+    release $2 $3
+  fi
+fi

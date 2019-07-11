@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: custom-resources
+  namespace: default
+data:
+  resources.1: myapps

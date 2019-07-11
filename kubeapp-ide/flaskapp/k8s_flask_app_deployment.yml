@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata: 
+    name: k8s-flask-app
+spec:
+    replicas: 1
+    template:
+        metadata:
+            labels:
+                app: k8s-flask-app
+        spec:
+            containers:
+            - name: k8s-flask-app-example
+                image: k8s-flask-app-example:latest
+                imagePullPolicy: Always
+                ports:
+                - containerPort: 5035

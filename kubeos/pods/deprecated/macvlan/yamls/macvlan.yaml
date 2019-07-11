@@ -1,0 +1,93 @@
+# Macvlan Version 0.7.4
+# https://github.com/containernetworking/plugins/releases/tag/v0.7.4
+# This manifest includes the following component versions:
+#   iscas-cloudplus.github.io/macvlan/node:v0.7.4
+
+---
+# This manifest installs the calico/node container, as well
+# as the Calico CNI plugins and network config on
+# each master and worker node in a Kubernetes cluster.
+kind: DaemonSet
+apiVersion: extensions/v1beta1
+metadata:
+  name: macvlan-node
+  namespace: kube-system
+  labels:
+    k8s-app: macvlan-node
+spec:
+  selector:
+    matchLabels:
+      k8s-app: macvlan-node
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        k8s-app: macvlan-node
+      annotations:
+        # This, along with the CriticalAddonsOnly toleration below,
+        # marks the pod as a critical add-on, ensuring it gets
+        # priority scheduling and that its resources are reserved
+        # if it ever gets evicted.
+        scheduler.alpha.kubernetes.io/critical-pod: ''
+    spec:
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+      hostNetwork: true
+      tolerations:
+        # Make sure macvlan-node gets scheduled on all nodes.
+        - effect: NoSchedule
+          operator: Exists
+        # Mark the pod as a critical add-on for rescheduling.
+        - key: CriticalAddonsOnly
+          operator: Exists
+        - effect: NoExecute
+          operator: Exists
+      # Minimize downtime during a rolling upgrade or deletion; tell Kubernetes to do a "force
+      # deletion": https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods.
+      terminationGracePeriodSeconds: 0
+      containers:
+        # Runs macvlan/node container on each Kubernetes node.  This
+        # container programs network policy and routes on each
+        # host.
+        - name: macvlan-node
+          image: iscas-cloudplus.github.io/macvlan/node:v0.7.4
+          securityContext:
+            privileged: true
+          resources:
+            requests:
+              cpu: 250m
+          env:
+            - name: MACVLAN_NIC
+              value: wlp3s0
+          volumeMounts:
+            - mountPath: /opt/cni/bin
+              name: cni-bin-dir
+            - mountPath: /etc/cni/net.d
+              name: cni-net-dir
+            - mountPath: /usr/bin
+              name: bin
+            - mountPath: /usr/sbin
+              name: sbin
+            - mountPath: /var/log
+              name: log
+      volumes:        
+        # Used to install CNI.
+        - name: cni-bin-dir
+          hostPath:
+            path: /opt/cni/bin
+        - name: cni-net-dir
+          hostPath:
+            path: /etc/cni/net.d
+        - name: bin
+          hostPath:
+            path: /usr/bin
+        - name: sbin
+          hostPath:
+            path: /usr/sbin
+        - name: log
+          hostPath:
+            path: /var/log
+

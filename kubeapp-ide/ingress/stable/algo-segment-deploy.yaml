@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: algo-segment
+  namespace: ingress-nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: algo-segment
+  template:
+    metadata:
+      labels:
+        app: algo-segment
+    spec:
+      containers:
+      - name: algo-segment
+        image: k8s_flask_app_example:0.1
+        ports:
+        - containerPort: 8080
+          name: httpport
+

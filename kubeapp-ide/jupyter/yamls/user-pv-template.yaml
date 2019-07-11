@@ -1,0 +1,15 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {name: admin-pv}
+  namespace: jhub
+  labels:
+    appname: jupyterhub
+spec:
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {path: "/opt/mnt/admin"}
+

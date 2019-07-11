@@ -1,0 +1,10 @@
+apiVersion: app.example.com/v1alpha1
+kind: MyApp
+metadata:
+  name: test-app1
+spec:
+  requests:
+    cpu: 500m
+    memory: 500Mi
+  input: "Hello World!"
+  fileURL: "https://github.com/operator-framework/operator-sdk/blob/master/release.sh"

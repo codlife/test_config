@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    component: scheduler
+    tier: control-plane
+  name: custom-scheduler
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      component: scheduler
+      tier: control-plane
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+        scheduler.alpha.kubernetes.io/critical-pod: ""
+      creationTimestamp: null
+      labels:
+        component: scheduler
+        tier: control-plane
+      name: custom-scheduler
+      namespace: kube-system
+    spec:
+      containers:
+        - command:
+          - /usr/local/bin/custom-scheduler
+          - --address=0.0.0.0
+          - --scheduler-name=crdscheduler
+          - --kubeconfig=/etc/kubernetes/admin.conf
+          - --leader-elect=false
+          - --port=10253
+          image: custom-scheduler:1.0
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 8
+            httpGet:
+              path: /healthz
+              port: 10253
+              scheme: HTTP
+            initialDelaySeconds: 15
+            timeoutSeconds: 15
+          name: custom-scheduler
+          resources:
+            requests:
+              cpu: 100m
+          volumeMounts:
+            - mountPath: /etc/kubernetes/admin.conf
+              name: kubeconfig
+              readOnly: true
+      hostNetwork: true
+      priorityClassName: system-cluster-critical
+      volumes:
+        - hostPath:
+            path: /etc/kubernetes/admin.conf
+            type: FileOrCreate
+          name: kubeconfig

@@ -1,0 +1,12 @@
+NAME kube-tools
+VERSION v1.13.3
+GIT 1903
+MAINTAINER wuheng@otcaix.iscas.ac.cn
+#CMD linux standrad script, like copy, mv, and so on 
+#CMD echo "Hello"
+#ENV 
+#DEP java-1.8.0-openjdk net-tools
+#EXPOSE 8080
+WORKDIR /
+#START bash ./bin/startup.sh
+#STOP  bash ./bin/shutdown.sh
